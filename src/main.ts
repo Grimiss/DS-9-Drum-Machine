@@ -8,8 +8,9 @@ let patterns = [demo(), emptyPattern(), emptyPattern(), emptyPattern()],
   lengthMode = false,
   clipboard = emptyPattern();
 const muted = names.map(() => false),
+  solo = names.map(() => false),
   engine = new Engine(),
-  seq = new Sequencer(engine, () => patterns[slot], voices, muted);
+  seq = new Sequencer(engine, () => patterns[slot], voices, muted, solo);
 const root = document.querySelector<HTMLDivElement>("#app")!;
 root.innerHTML = `<div class="machine"><header><b>GRIMISS <em>DS-9</em></b><i>Analog Drum Machine / Sample Sequencer</i></header><section class="sequencer"><div class="numbers"><span>STEP</span>${Array.from({ length: 16 }, (_, i) => `<span>${i + 1}</span>`).join("")}<span>LEN</span></div><div id="lanes"></div><div class="legend"><b class="key"></b> = OFF <b class="key amber"></b> = CLOSED HI-HAT (CH) <b class="key red"></b> = OPEN HI-HAT (OH) <b class="key alt"></b> = CH → OH (ALT)</div></section><section class="editor"><div class="voice-heading"><button id="prev">◀︎</button><div class="display" id="voice-name"></div><button id="next">▶︎</button></div><div class="modes"><button id="analog">ANALOG</button><button id="sample">SAMPLE</button><button id="load-sample">LOAD</button></div><div class="knobs" id="voice-knobs"></div><div class="hat-controls"><fieldset><legend>HI-HAT MODE</legend><button id="closed">CLOSED</button><button id="open">OPEN</button></fieldset><fieldset><legend>CHOKE</legend><button class="amber" disabled title="Closed hi-hats always choke open hats">OH → CH</button></fieldset></div><fieldset class="sample-edit"><legend>SAMPLE EDIT</legend><canvas id="wave" width="310" height="80"></canvas><button id="trim">TRIM</button><button id="reverse">REV</button><div class="knobs" id="sample-knobs"></div></fieldset><div id="notice" role="status">SELECT A VOICE • CLICK ITS NAME TO AUDITION</div></section><footer><div class="transport"><button id="play" class="green">▶︎</button><button id="stop">■</button><button id="record" disabled title="Live recording is planned">●</button><button id="pause">Ⅱ</button></div><div class="tempo"><label>TEMPO</label><div><button id="slower">◀︎</button><input id="bpm" class="display" type="number" min="30" max="300" value="120.0"><button id="faster">▶︎</button></div></div><div class="swing"><label>SWING</label><div id="swing-knob"></div></div><div class="pattern"><label>PATTERN</label><div><button id="pattern-prev">◀︎</button><span class="display" id="pattern-name">A</span><button id="pattern-next">▶︎</button></div></div><div id="slots">${["A", "B", "C", "D"].map((n, i) => `<button data-slot="${i}">${n}</button>`).join("")}</div><button id="length">SET<br>LENGTH</button><div class="link"><span>○ LINK GMC-9000</span><div><button disabled title="Future GMC integration">LAYER</button><button disabled title="Future GMC integration">REPLACE</button></div></div><button id="reset">RESET<br>ALL</button><div class="files"><button id="load">LOAD</button><button id="save">SAVE</button><button id="copy">COPY</button><button id="paste">PASTE</button></div><button id="clear">CLEAR</button></footer>${[0, 1, 2, 3, 4, 5].map((i) => `<span class="screw s${i}">✦</span>`).join("")}</div><input id="sample-file" type="file" accept="audio/wav,audio/*" hidden><input id="pattern-file" type="file" accept="application/json" hidden>`;
 const $ = (id: string) => document.getElementById(id)!;
@@ -19,7 +20,7 @@ function render() {
   $("lanes").innerHTML = patterns[slot]
     .map(
       (l, i) =>
-        `<div class="lane ${i === selected ? "selected" : ""}"><span class="led ${muted[i] ? "muted" : ""}"></span><button class="mute" data-mute="${i}" aria-label="Mute ${names[i]}" aria-pressed="${muted[i]}"></button><span class="led"></span><button class="display name" data-voice="${i}">${names[i]}</button><div class="steps">${l.steps.map((s, n) => `<button aria-label="${names[i]} step ${n + 1}" aria-pressed="${!!s}" data-lane="${i}" data-step="${n}" class="step ${s === 2 ? "red" : s ? "amber" : ""} ${n >= l.length ? "outside" : ""}"></button>`).join("")}</div><button class="length" data-length="${i}" title="Click to increase; right click to decrease">${l.length}</button></div>`,
+        `<div class="lane ${i === selected ? "selected" : ""}"><div class="track-switches"><button class="mute ${muted[i] ? 'engaged' : ''}" data-mute="${i}" aria-label="Mute ${names[i]}" aria-pressed="${muted[i]}">M</button><button class="solo ${solo[i] ? 'engaged' : ''}" data-solo="${i}" aria-label="Solo ${names[i]}" aria-pressed="${solo[i]}">S</button></div><button class="display name" data-voice="${i}">${names[i]}</button><div class="steps">${l.steps.map((s, n) => `<button aria-label="${names[i]} step ${n + 1}" aria-pressed="${!!s}" data-lane="${i}" data-step="${n}" class="step ${s === 2 ? "red" : s ? "amber" : ""} ${n >= l.length ? "outside" : ""}"></button>`).join("")}</div><button class="length" data-length="${i}" title="Click to increase; right click to decrease">${l.length}</button></div>`,
     )
     .join("");
   $("voice-name").textContent = `VOICE: ${names[selected]}`;
@@ -105,17 +106,66 @@ function select(i: number) {
   render();
   controls();
 }
+function editStep(button: HTMLElement) {
+  const lane=Number(button.dataset.lane), step=Number(button.dataset.step);
+  const l=patterns[slot][lane];
+  if(lengthMode) l.length=step+1;
+  else l.steps[step]=(l.steps[step]+1)%(lane===5?3:2);
+  // Preserve DOM nodes while dragging so pointer tracking and focus stay stable.
+  const row=button.closest('.lane')!;
+  row.querySelector('[data-length]')!.textContent=String(l.length);
+  row.querySelectorAll<HTMLElement>('.step').forEach((b,n)=>{
+    b.classList.toggle('amber',l.steps[n]===1);
+    b.classList.toggle('red',l.steps[n]===2);
+    b.classList.toggle('outside',n>=l.length);
+    b.setAttribute('aria-pressed',String(!!l.steps[n]));
+  });
+}
+let dragPointer: number | undefined;
+const visited=new Set<string>();
+function paintStep(target: Element | null) {
+  const b=target?.closest<HTMLElement>('.step');
+  if(!b)return;
+  const key=`${b.dataset.lane}:${b.dataset.step}`;
+  if(visited.has(key))return;
+  visited.add(key);editStep(b);
+}
+root.addEventListener('pointerdown',e=>{
+  if(e.button!==0 || !(e.target as Element).closest('.step'))return;
+  e.preventDefault();dragPointer=e.pointerId;visited.clear();paintStep(e.target as Element);
+  root.setPointerCapture(e.pointerId);
+});
+root.addEventListener('pointermove',e=>{
+  if(e.pointerId!==dragPointer)return;
+  // Sample the pointer path so fast drags cannot skip intermediate buttons.
+  const distance=Math.hypot(e.movementX,e.movementY);
+  const count=Math.max(1,Math.ceil(distance/6));
+  for(let n=1;n<=count;n++)paintStep(document.elementFromPoint(e.clientX-e.movementX*(1-n/count),e.clientY-e.movementY*(1-n/count)));
+});
+function endDrag(e:PointerEvent){if(e.pointerId===dragPointer){dragPointer=undefined;visited.clear();if(root.hasPointerCapture(e.pointerId))root.releasePointerCapture(e.pointerId);}}
+root.addEventListener('pointerup',endDrag);
+root.addEventListener('pointercancel',endDrag);
+root.addEventListener('lostpointercapture',()=>{dragPointer=undefined;visited.clear()});
+// All range controls, including future faders, share wheel adjustment and input bindings.
+root.addEventListener('wheel',e=>{
+  const el=(e.target as Element).closest('input, .knob-wrap');
+  const input=el instanceof HTMLInputElement?el:el?.querySelector('input');
+  if(!(input instanceof HTMLInputElement)||!['range','number'].includes(input.type)||e.deltaY===0)return;
+  e.preventDefault();const min=Number(input.min||0),max=Number(input.max||1),step=Number(input.step==='any'?'0.01':input.step||1);
+  input.value=String(Math.max(min,Math.min(max,Number(input.value)+(e.deltaY<0?step:-step))));
+  input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));
+},{passive:false});
+addEventListener('keydown',e=>{
+  if(e.code!=='Space'||e.repeat||e.altKey||e.ctrlKey||e.metaKey)return;
+  const target=e.target as HTMLElement;
+  if(target.closest('input,textarea,select,[contenteditable="true"]'))return;
+  e.preventDefault();$(seq.timer?'pause':'play').click();
+});
 root.addEventListener("click", async (e) => {
   const b = (e.target as HTMLElement).closest<HTMLElement>("button");
   if (!b) return;
   const d = b.dataset;
-  if (d.step !== undefined) {
-    const l = patterns[slot][+d.lane!],
-      n = +d.step;
-    if (lengthMode) l.length = n + 1;
-    else l.steps[n] = (l.steps[n] + 1) % (+d.lane! === 5 ? 3 : 2);
-    render();
-  }
+  if (d.step !== undefined && e.detail === 0) editStep(b);
   if (d.voice !== undefined) {
     select(+d.voice);
     await engine.unlock();
@@ -123,6 +173,10 @@ root.addEventListener("click", async (e) => {
   }
   if (d.mute !== undefined) {
     muted[+d.mute] = !muted[+d.mute];
+    render();
+  }
+  if (d.solo !== undefined) {
+    solo[+d.solo] = !solo[+d.solo];
     render();
   }
   if (d.length !== undefined) {
