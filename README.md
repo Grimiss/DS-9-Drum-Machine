@@ -17,7 +17,7 @@ For browser integration tests, start Vite on port 5173, install Chromium, and ru
 
 ## Playing
 
-Click Play to unlock browser audio and start the demo in A. Click a voice name to select and audition it. Steps toggle off/on; hats cycle off/closed/open. Mute buttons precede the lane names. SET LENGTH enables choosing a lane's final step. Length displays also increment on click and decrement on right click. Each lane wraps independently. Pause preserves the next position; Stop returns the clock to zero and silences scheduled voices.
+Click Play to unlock browser audio and start the demo in A. Click a voice name to select and audition it. Steps toggle off/on; hats cycle off/closed/open. M and S buttons precede the lane names. M lights red when muted; S lights green when soloed. Multiple solos form a group; mute takes priority. SET LENGTH enables choosing a lane's final step. Length displays also increment on click and decrement on right click. Each lane wraps independently. Pause preserves the next position; Stop returns the clock to zero and silences scheduled voices.
 
 A–D retain separate steps and lengths in memory. COPY/PASTE copies a pattern; CLEAR clears the current slot; RESET ALL clears all four. SAVE/LOAD exports/imports the four patterns as JSON. Reloading the page restores the demo, so save work before closing.
 
@@ -34,3 +34,9 @@ Voice LEVEL, TUNE, DECAY, TONE control DSP. Knobs are accessible range inputs: d
 `Sequencer.onEvent` is the future GMC boundary: start/pause/stop and lane/step events carry AudioContext timestamps. A future adapter can translate these without importing the GMC repository. LINK, LAYER, REPLACE and recording are explicitly disabled. The UI's ALT legend describes a future articulation; this version implements only off/closed/open.
 
 See [geometry](docs/GEOMETRY.md), [implementation report](docs/IMPLEMENTATION.md) and [screenshot](docs/DS-9-screenshot.png).
+
+## Updated performance controls
+
+Click and hold over the step grid, then drag across pads to toggle each visited pad once per gesture. Hi-hats retain the off/closed/open cycle. Thin white lines separate groups of four steps. Mouse-wheel up increases and down decreases knobs/ranges and tempo, clamped to their limits. Space toggles play/pause outside input fields, without restarting the position; Stop still resets. Mute/solo are live performance state and are not included in pattern files.
+
+Run `node tests/controls.mjs` against the development server for the performance-control regression suite. See [sample-kit licensing research](docs/SAMPLE-KITS.md) before adding third-party factory kits.

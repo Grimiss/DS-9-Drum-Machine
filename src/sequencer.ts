@@ -1,4 +1,4 @@
-import { interval, position, type Lane, type Voice } from "./state";
+import { interval, position, isAudible, type Lane, type Voice } from "./state";
 import { Engine } from "./audio";
 /** Integration boundary: time is AudioContext seconds; no GMC dependency. */
 export interface TransportEvent {
@@ -20,6 +20,7 @@ export class Sequencer {
     public pattern: () => Lane[],
     public voices: Voice[],
     public muted: boolean[],
+    public solo: boolean[] = [],
   ) {}
   async play() {
     await this.engine.unlock();
@@ -36,7 +37,7 @@ export class Sequencer {
       this.queued.push({ tick: this.tick, time: t });
       this.pattern().forEach((l, i) => {
         const step = position(this.tick, l.length);
-        if (l.steps[step] && !this.muted[i])
+        if (l.steps[step] && isAudible(i, this.muted, this.solo))
           this.engine.trigger(i, l.steps[step], t, this.voices[i]);
         this.onEvent({ type: "trigger", time: t, lane: i, step });
       });

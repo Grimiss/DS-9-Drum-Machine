@@ -675,3 +675,10 @@ button {
     radial-gradient(ellipse at 40% 0, #1b1d1a, #090c0a 90%);
 }
 .sample-edit #trim{top:6px;background:radial-gradient(#ffe477,#ffac0a 65%,#ef7400)}.sample-edit #reverse{top:52px}.voice-heading button,#slower,#faster,#pattern-prev,#pattern-next,#play,#pause{font-size:0}.voice-heading button::before,#slower::before,#faster::before,#pattern-prev::before,#pattern-next::before,#play::before{content:'';display:inline-block;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:17px solid #eee0bc;filter:drop-shadow(0 2px 1px #000)}#prev::before,#slower::before,#pattern-prev::before{transform:rotate(180deg)}#play::before{border-left-color:#233709}#pause::before{content:'Ⅱ';font-size:29px}#closed{background:radial-gradient(#ffe477,#ffac0a 65%,#ef7400)}.link button{width:79px;font-size:16px}.length{flex-shrink:0;font-family:Arial,sans-serif}.name{flex-shrink:0}.steps{flex-shrink:0}
+/* M/S occupy the existing LED/mute strip; the remaining hardware stays aligned. */
+.track-switches{display:flex;gap:7px;flex:0 0 81px;margin-right:0}
+.track-switches button{width:34px;height:30px;padding:0;background:linear-gradient(#454741,#232520);color:#ada98f;font:bold 19px Arial,sans-serif;border:2px solid #141512;box-shadow:inset 0 1px 1px #ffffff55,0 3px 4px #000}
+.track-switches .mute.engaged{color:#ff4438;text-shadow:0 0 8px #ff211b;box-shadow:inset 0 0 5px #9d1c14,0 0 5px #ff211b44}
+.track-switches .solo.engaged{color:#89ff54;text-shadow:0 0 8px #58ff29;box-shadow:inset 0 0 5px #28771a,0 0 5px #58ff2944}
+.step{position:relative;touch-action:none;user-select:none}
+.step:nth-child(4n):not(:last-child)::after{content:'';position:absolute;right:-5px;top:-3px;height:42px;width:1px;background:#fff;opacity:.65;pointer-events:none}

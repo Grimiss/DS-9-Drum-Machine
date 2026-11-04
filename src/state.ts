@@ -57,3 +57,6 @@ export const voices: Voice[] = names.map(() => ({
   pitch: 0.5,
   reverse: false,
 }));
+
+/** Mute takes priority; any active solo excludes tracks outside the solo group. */
+export const isAudible = (lane:number, muted:boolean[], solo:boolean[]) => !muted[lane] && (!solo.some(Boolean) || !!solo[lane]);

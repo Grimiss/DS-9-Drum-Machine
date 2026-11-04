@@ -28,3 +28,13 @@ test("swing preserves pair duration", () => {
   assert.equal(interval(1, 120, 0.5), 0.0625);
   assert.equal(interval(0, 120, 0.5) + interval(1, 120, 0.5), 0.25);
 });
+
+test('multiple solos form a group and mute overrides solo', async () => {
+  const {isAudible}=await import('../src/state.ts');
+  const mute=Array(9).fill(false),solo=Array(9).fill(false);
+  assert.ok(isAudible(8,mute,solo));
+  solo[0]=true;solo[2]=true;
+  assert.ok(isAudible(0,mute,solo));assert.ok(isAudible(2,mute,solo));assert.equal(isAudible(1,mute,solo),false);
+  mute[0]=true;assert.equal(isAudible(0,mute,solo),false);assert.ok(isAudible(2,mute,solo));
+  solo.fill(false);assert.ok(isAudible(1,mute,solo));assert.equal(isAudible(0,mute,solo),false);
+});
