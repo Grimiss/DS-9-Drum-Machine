@@ -1,5 +1,8 @@
+import { kits, type KitId } from "./kits";
+import { synthesizeKit } from "./synthesis";
 import type { Voice } from "./state";
 export class Engine {
+  kit: KitId = "classic";
   context?: AudioContext;
   master?: DynamicsCompressorNode;
   hat?: GainNode;
@@ -33,14 +36,13 @@ export class Engine {
     output: AudioNode = this.master!,
   ) {
     if (v.level <= 0) return;
+    const recipe=this.kit === "classic" ? undefined : kits[this.kit];
     const c = context,
       g = c.createGain(),
       dur =
-        (i === 5
-          ? state === 2
-            ? 0.45
-            : 0.065
-          : [0.4, 0.17, 0.16, 0.3, 0.22, 0.1, 0.13, 0.08, 0.65][i]) *
+        (recipe && v.mode === "analog"
+          ? (i === 5 && state === 2 ? recipe.openHat : recipe.durations[i])
+          : (i === 5 ? (state === 2 ? .45 : .065) : [.4,.17,.16,.3,.22,.1,.13,.08,.65][i])) *
         (0.3 + v.decay * 2),
       pitch = 2 ** ((v.tune - 0.5) * 2);
     g.gain.setValueAtTime(Math.max(0.001, v.level * 0.18), time);
@@ -80,6 +82,7 @@ export class Engine {
       s.start(time, start, end - start);
       return;
     }
+    if(recipe){synthesizeKit(c,g,i,time,dur,v,recipe);return;}
     const tone = c.createBiquadFilter();
     tone.type =
       i === 0 || i === 3 || i === 4 || i === 7 ? "lowpass" : "highpass";
