@@ -1,0 +1,9 @@
+# Original synthesized factory kits
+
+`src/kits.ts` contains four recipes; `src/synthesis.ts` renders them using native Web Audio oscillators, noise, filters, envelopes and mild saturation. `Engine.kit` selects the recipe; DS-9 Original and sample playback retain their existing paths. The selector lives in the header without moving the sequencer or editing panels.
+
+No commercial or third-party recordings, ROM dumps or downloaded sample packs are used. MEMORY 88, DEEP 08, DRIVE 09 and RHYTHM 55 are original character studies inspired respectively by the SR-88, TR-808, TR-909 and KR-55. They are not exact reproductions. Nine-track mapping is DS-9's, rather than a claim about the original machines' voice layouts.
+
+Kick recipes vary pitch sweep, tail, transient and saturation. Snares combine two pitched modes with filtered noise. Claps use several short noise bursts and a tail. Toms use resonant pitch envelopes. Metallic hats/cymbals use inharmonic oscillator banks plus noise; open hats have longer decay. Percussion is woody except for DEEP 08's cowbell-like dual square wave. Claves use short paired resonances. Level, Tune, Decay and Tone act on generated audio. Repeatable noise excitation provides stable factory hits and meaningful render comparisons.
+
+Validation: the production build and state suite pass. Browser checks render all 36 new voices with finite, nonzero energy and below-full-scale default peaks; confirm each lane differs across the four kits; check open hats ring longer than closed, zero level is silent, high Tune/Tone/Decay work at 44.1 kHz, and parameter changes alter actual waveforms. Selector tests check patterns, mute/solo and editing remain available. Existing audio and performance-control regression suites also run. Sound character still needs the user's listening feedback; programmatic checks do not establish resemblance to particular hardware.

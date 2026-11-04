@@ -40,3 +40,18 @@ See [geometry](docs/GEOMETRY.md), [implementation report](docs/IMPLEMENTATION.md
 Click and hold over the step grid, then drag across pads to toggle each visited pad once per gesture. Hi-hats retain the off/closed/open cycle. Thin white lines separate groups of four steps. Mouse-wheel up increases and down decreases knobs/ranges and tempo, clamped to their limits. Space toggles play/pause outside input fields, without restarting the position; Stop still resets. Mute/solo are live performance state and are not included in pattern files.
 
 Run `node tests/controls.mjs` against the development server for the performance-control regression suite. See [sample-kit licensing research](docs/SAMPLE-KITS.md) before adding third-party factory kits.
+
+## Original factory kits
+
+Use **FACTORY KIT** in the upper-right header. The default remains **DS-9 ORIGINAL**. Four additional banks use original synthesis, without third-party recordings:
+
+| Bank | General inspiration | Character |
+|---|---|---|
+| MEMORY 88 | Sound Master Memory Rhythm SR-88 | Short rounded kick, papery snare, fizzy hats, woody percussion |
+| DEEP 08 | Roland TR-808 | Long sub kick, airy noise snare, resonant toms, cowbell-like percussion |
+| DRIVE 09 | Roland TR-909 | Punchy kick with attack noise, bright snare, sharper clap and sizzling hats |
+| RHYTHM 55 | Korg KR-55 | Warm compact rhythm-box voices, softer snare and dry woodblock |
+
+These are stylistic approximations mapped to DS-9's nine tracks, not circuit models, factory recordings or manufacturer-endorsed products. Every track has a functional synthesis voice; the combined hat has both closed and open articulations with the existing choke behaviour.
+
+Kit changes keep steps, lengths, slots, tempo, swing, levels, mute/solo states and imported sample buffers. They switch all voices to ANALOG and reset Tune/Decay/Tone to neutral. Select SAMPLE again to use a retained imported sound. Kit choice and edits are currently not saved in pattern JSON; reload restores DS-9 ORIGINAL. Run `node tests/kits.mjs` against Vite for 36-voice offline rendering, articulation, parameter and kit-switch checks.
