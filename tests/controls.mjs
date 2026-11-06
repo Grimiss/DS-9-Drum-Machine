@@ -18,7 +18,7 @@ await step(0).click();assert.equal(await step(0).getAttribute('aria-pressed'),'f
 // Hat drag preserves the three-state cycle.
 const hat=page.locator('[data-lane="5"][data-step="1"]');await hat.click();await hat.click();assert.ok((await hat.getAttribute('class')).includes('red'));
 for(const id of ['voice-knobs','sample-knobs','swing-knob']){
- const input=page.locator(`#${id} input`).first();await input.fill('0.5');const before=Number(await input.inputValue());await input.hover();await page.mouse.wheel(0,-100);assert.ok(Number(await input.inputValue())>before);
+ const input=page.locator(`#${id} input`).first();await input.fill('0.5');const before=Number(await input.inputValue());await input.locator("..").hover();await page.mouse.wheel(0,-100);assert.ok(Number(await input.inputValue())>before);
  await input.fill('1');await page.mouse.wheel(0,-100);assert.equal(Number(await input.inputValue()),1);
 }
 await page.locator('#bpm').hover();await page.mouse.wheel(0,-100);assert.equal(Number(await page.locator('#bpm').inputValue()),121);
