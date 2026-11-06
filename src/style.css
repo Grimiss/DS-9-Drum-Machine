@@ -9,7 +9,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 0;
 }
 button,
 input {
@@ -713,3 +713,8 @@ header i{margin-top:0;font-size:24px}
 #midi-editor .midi-note.selected{outline:2px solid #fff;outline-offset:1px}
 #midi-playhead{position:absolute;top:25px;bottom:0;width:2px;background:#8dff56;pointer-events:none}
 #midi-status{font-size:12px;color:#d8d09f}
+
+/* Fit the visible tablet viewport, including browser chrome and safe areas. */
+html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{position:fixed;inset:0;display:block;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+#app{position:fixed;overflow:hidden}

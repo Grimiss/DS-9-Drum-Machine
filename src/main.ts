@@ -1,3 +1,4 @@
+import { mountHardwareViewport } from "./viewport";
 import { defaultAssignments } from "./drum-assignments.ts";
 import { ClipStore } from "./events/clip-store";
 import { Recorder } from "./events/recording";
@@ -693,14 +694,6 @@ click("load", () => ($("pattern-file") as HTMLInputElement).click());
     (e.target as HTMLInputElement).value = "";
   }
 };
-function resize() {
-  const scale = Math.min(innerWidth / 1754, innerHeight / 886);
-  root.style.width = `${1754 * scale}px`;
-  root.style.height = `${886 * scale}px`;
-  document.querySelector<HTMLElement>(".machine")!.style.transform =
-    `scale(${scale})`;
-}
-addEventListener("resize", resize);
 render();
 controls();
-resize();
+mountHardwareViewport(root);
