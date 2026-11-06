@@ -20,7 +20,7 @@ export const kits: Record<Exclude<KitId, "classic">, KitRecipe> = {
     label: "MEMORY 88",
     description:
       "SR-88-inspired: compact kick, papery snare, fizzy hats and woody percussion",
-    durations: [0.23, 0.14, 0.13, 0.19, 0.15, 0.055, 0.12, 0.045, 0.38],
+    durations: [0.23, 0.14, 0.13, 0.19, 0.15, 0.055, 0.12, 0.045, 2.0],
     openHat: 0.24,
     kick: [125, 53, 0.035],
     snare: [185, 320],
@@ -36,7 +36,7 @@ export const kits: Record<Exclude<KitId, "classic">, KitRecipe> = {
     label: "DEEP 08",
     description:
       "808-inspired: rounded sub kick, airy snare, ringing toms and cowbell-like percussion",
-    durations: [0.8, 0.21, 0.24, 0.42, 0.31, 0.065, 0.21, 0.055, 0.85],
+    durations: [0.8, 0.21, 0.24, 0.42, 0.31, 0.065, 0.21, 0.055, 2.8],
     openHat: 0.48,
     kick: [145, 43, 0.07],
     snare: [175, 330],
@@ -52,7 +52,7 @@ export const kits: Record<Exclude<KitId, "classic">, KitRecipe> = {
     label: "DRIVE 09",
     description:
       "909-inspired: punchy kick, bright snare, aggressive clap and sizzling metallic hats",
-    durations: [0.39, 0.19, 0.19, 0.28, 0.22, 0.075, 0.16, 0.065, 1.0],
+    durations: [0.39, 0.19, 0.19, 0.28, 0.22, 0.075, 0.16, 0.065, 3.2],
     openHat: 0.55,
     kick: [190, 51, 0.038],
     snare: [195, 360],
@@ -68,7 +68,7 @@ export const kits: Record<Exclude<KitId, "classic">, KitRecipe> = {
     label: "RHYTHM 55",
     description:
       "KR-55-inspired: warm rhythm-box kick, soft noise snare, rounded toms and dry woodblock",
-    durations: [0.28, 0.16, 0.12, 0.25, 0.19, 0.045, 0.14, 0.075, 0.45],
+    durations: [0.28, 0.16, 0.12, 0.25, 0.19, 0.045, 0.14, 0.075, 2.3],
     openHat: 0.22,
     kick: [105, 58, 0.028],
     snare: [150, 275],

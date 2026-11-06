@@ -1,3 +1,4 @@
+import { synthesizeCymbal } from "./cymbal";
 import { kits, type KitId } from "./kits";
 import { synthesizeKit } from "./synthesis";
 import type { Voice } from "./state";
@@ -40,13 +41,14 @@ export class Engine {
     const c = context,
       g = c.createGain(),
       dur =
-        (recipe && v.mode === "analog"
+        (i===8 && v.mode==='sample' ? .65 : recipe && v.mode === "analog"
           ? (i === 5 && state === 2 ? recipe.openHat : recipe.durations[i])
-          : (i === 5 ? (state === 2 ? .45 : .065) : [.4,.17,.16,.3,.22,.1,.13,.08,.65][i])) *
+          : (i === 5 ? (state === 2 ? .45 : .065) : [.4,.17,.16,.3,.22,.1,.13,.08,2.8][i])) *
         (0.3 + v.decay * 2),
       pitch = 2 ** ((v.tune - 0.5) * 2);
     g.gain.setValueAtTime(Math.max(0.001, v.level * 0.18), time);
-    g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+    if(i===8 && v.mode==='analog')g.gain.setValueAtTime(0,time+dur);
+    else g.gain.exponentialRampToValueAtTime(0.0001,time+dur);
     g.connect(output);
     if (context === this.context) {
       this.active.add(g);
@@ -82,6 +84,7 @@ export class Engine {
       s.start(time, start, end - start);
       return;
     }
+    if(i===8 && !recipe){synthesizeCymbal(c,g,time,dur,v);return;}
     if(recipe){synthesizeKit(c,g,i,time,dur,v,recipe);return;}
     const tone = c.createBiquadFilter();
     tone.type =

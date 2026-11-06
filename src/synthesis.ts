@@ -1,3 +1,4 @@
+import { synthesizeCymbal } from "./cymbal";
 import type { KitRecipe } from "./kits";
 import type { Voice } from "./state";
 
@@ -11,6 +12,7 @@ export function synthesizeKit(
   v: Voice,
   kit: KitRecipe,
 ) {
+  if(lane===8){synthesizeCymbal(c,output,time,duration,v,kit);return;}
   const pitch = 2 ** ((v.tune - 0.5) * 2);
   const brightness = 2 ** ((v.tone - 0.5) * 2);
   const bus = c.createGain();

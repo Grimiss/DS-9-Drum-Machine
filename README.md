@@ -55,3 +55,5 @@ Use **FACTORY KIT** in the upper-right header. The default remains **DS-9 ORIGIN
 These are stylistic approximations mapped to DS-9's nine tracks, not circuit models, factory recordings or manufacturer-endorsed products. Every track has a functional synthesis voice; the combined hat has both closed and open articulations with the existing choke behaviour.
 
 Kit changes keep steps, lengths, slots, tempo, swing, levels, mute/solo states and imported sample buffers. They switch all voices to ANALOG and reset Tune/Decay/Tone to neutral. Select SAMPLE again to use a retained imported sound. Kit choice and edits are currently not saved in pattern JSON; reload restores DS-9 ORIGINAL. Run `node tests/kits.mjs` against Vite for 36-voice offline rendering, articulation, parameter and kit-switch checks.
+
+The synthesized cymbals now use a softer, longer noise wash across all kits. See [cymbal sound revision](docs/CYMBAL-UPDATE.md) for decay ranges and comparison tests. Other drums and imported samples retain their existing sound paths.
