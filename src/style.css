@@ -686,3 +686,30 @@ header i{margin-top:0;font-size:24px}
 .kit-bank{position:absolute;right:0;top:40px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:bold;letter-spacing:1px}
 .kit-bank select{height:25px;width:205px;background:#191c17;color:#f2e5c2;border:1px solid #a99e80;border-radius:4px;padding:1px 8px;font: bold 15px 'Arial Narrow',Arial,sans-serif;cursor:pointer;box-shadow:inset 0 1px 4px #000}
 .kit-bank select:focus-visible{outline:2px solid #d5ed93;outline-offset:2px}
+/* Optional MIDI workspace; the nine-track hardware canvas remains unchanged. */
+#record{font-size:13px;line-height:15px}
+.kit-bank #midi-edit{height:25px;font-size:13px;padding:1px 10px}
+#midi-editor{width:min(1500px,96vw);max-height:94vh;background:#141713;color:#eee2c4;border:2px solid #dacdac;border-radius:12px;padding:18px;box-shadow:0 20px 100px #000c;font-size:15px}
+#midi-editor::backdrop{background:#000b}
+#midi-editor .midi-heading{position:static;border:0;border-bottom:3px solid #f54b0d;height:auto;display:flex;align-items:center;padding-bottom:10px;margin-bottom:12px;font-size:20px}
+#midi-editor button{height:32px;font-size:13px;padding:3px 10px}
+.midi-tools,.midi-devices,.midi-inspector{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0}
+#midi-editor label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:bold}
+#midi-editor input,#midi-editor select{background:#242a21;border:1px solid #a99c80;color:#f0e4c6;border-radius:4px;padding:4px;font:inherit}
+#midi-editor input[type=number]{width:80px}
+#midi-editor input[type=range]{width:150px}
+.midi-help{color:#bdb69e;font-size:12px}
+.midi-scroll{overflow:auto;max-height:52vh;border:1px solid #aaa080}
+.midi-canvas{display:flex;width:max-content;min-width:100%}
+#midi-labels{position:sticky;left:0;z-index:4;width:220px;flex-shrink:0;background:#1c211b;padding-top:25px}
+.midi-label{height:38px;display:flex;align-items:center;border-bottom:1px solid #706a57;gap:5px;padding:2px 5px}
+#midi-editor .midi-label button{flex:1;max-width:153px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:left;background:#262e22;color:#eee0bc;border:1px solid #7a7159;box-shadow:none}
+#midi-editor .midi-label input{width:48px;padding:2px;font-size:12px}
+#midi-grid{position:relative;flex-shrink:0;min-width:256px}
+#midi-ruler{position:relative;height:25px;background:#30352a;border-bottom:1px solid #a99c80}
+#midi-ruler span{position:absolute;font-size:12px;padding:4px;border-left:1px solid #aaa}
+#midi-notes{position:relative;height:380px;touch-action:none;user-select:none;background-image:linear-gradient(to right,#f2e4bd30 1px,transparent 1px),linear-gradient(to bottom,#f2e4bd60 1px,transparent 1px);background-size:16px 38px}
+#midi-editor .midi-note{position:absolute;width:11px;height:30px;padding:0;border:1px solid #f8c95a;border-radius:3px;background:#ff9f16;box-shadow:0 0 3px #f90}
+#midi-editor .midi-note.selected{outline:2px solid #fff;outline-offset:1px}
+#midi-playhead{position:absolute;top:25px;bottom:0;width:2px;background:#8dff56;pointer-events:none}
+#midi-status{font-size:12px;color:#d8d09f}

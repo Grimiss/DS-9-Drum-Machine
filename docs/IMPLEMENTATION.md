@@ -1,5 +1,7 @@
 # First implementation report
 
+Historical baseline report. Current MIDI/session changes are described in [MIDI-IMPLEMENTATION.md](MIDI-IMPLEMENTATION.md).
+
 ## Functional
 
 Nine synthesized voices (kick, snare, clap, two toms, combined closed/open hat, percussion, claves, cymbal), master attenuation and compressor. Per-voice level, tuning, decay and tone. WAV/browser-decodable audio import up to ten seconds, playback region, reverse and pitch. Nine independent 1–16 step lanes, BPM 30–300, swing, mute, audition, transport, four pattern slots, pattern JSON save/load and copy/paste.
