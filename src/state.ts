@@ -21,6 +21,7 @@ export type Voice = {
   pitch: number;
   reverse: boolean;
   sample?: AudioBuffer;
+  sampleName?: string;
 };
 export const emptyPattern = (): Lane[] =>
   names.map(() => ({ steps: Array(16).fill(0), length: 16 }));
@@ -59,4 +60,5 @@ export const voices: Voice[] = names.map(() => ({
 }));
 
 /** Mute takes priority; any active solo excludes tracks outside the solo group. */
-export const isAudible = (lane:number, muted:boolean[], solo:boolean[]) => !muted[lane] && (!solo.some(Boolean) || !!solo[lane]);
+export const isAudible = (lane: number, muted: boolean[], solo: boolean[]) =>
+  !muted[lane] && (!solo.some(Boolean) || !!solo[lane]);
