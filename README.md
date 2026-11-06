@@ -74,3 +74,5 @@ Click **MIDI EDIT** in the hardware header. The optional overlay has ten articul
 Save sessions with the existing SAVE button. They include A–D steps/lengths/clips, assignments and note mapping, kit/voice settings, PCM sample assets, tempo/swing, clock/playback mode, quantization, device selection and mute/solo. Samples are limited to ten seconds, eight channels, 192 kHz, with 64 MiB total decoded assets; input JSON is limited to 100 MiB. Session loading validates/prepares everything before changing running state. No automatic cloud upload or autosave is added.
 
 Run `node tests/scheduler.mjs` and `node tests/midi.mjs` against the development server for timing, recording, editor and full-session regression tests. See [the implementation review](docs/MIDI-IMPLEMENTATION.md) and [editor screenshot](docs/MIDI-editor-screenshot.png).
+
+The synthesized cymbals now use a softer, longer noise wash across all kits. See [cymbal sound revision](docs/CYMBAL-UPDATE.md) for decay ranges and comparison tests. Other drums and imported samples retain their existing sound paths.
