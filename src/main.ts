@@ -1,3 +1,4 @@
+import { attachKnobDrag } from "./knob-control";
 import { mountHardwareViewport } from "./viewport";
 import { kits, type KitId } from "./kits";
 import "./style.css";
@@ -55,13 +56,14 @@ function knob(
 ) {
   const wrap = document.createElement("label");
   wrap.className = "knob-wrap";
-  wrap.innerHTML = `<span>${label}</span><input type="range" min="0" max="1" step="0.01" value="${value}" aria-label="${label}"><b class="knob"><i></i></b>`;
+  wrap.innerHTML = `<span>${label}</span><input type="range" min="0" max="1" step="0.01" value="${value}" aria-label="${label || 'Swing'}"><b class="knob"><i></i></b>`;
   const input = wrap.querySelector("input")!;
   const update = () => {
     wrap.style.setProperty("--angle", `${-135 + Number(input.value) * 270}deg`);
     change(Number(input.value));
   };
   input.oninput = update;
+  attachKnobDrag(wrap,input);
   wrap.style.setProperty("--angle", `${-135 + value * 270}deg`);
   $(container).append(wrap);
 }

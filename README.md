@@ -21,7 +21,7 @@ Click Play to unlock browser audio and start the demo in A. Click a voice name t
 
 A–D retain separate steps and lengths in memory. COPY/PASTE copies a pattern; CLEAR clears the current slot; RESET ALL clears all four. SAVE/LOAD exports/imports the four patterns as JSON. Reloading the page restores the demo, so save work before closing.
 
-Voice LEVEL, TUNE, DECAY, TONE control DSP. Knobs are accessible range inputs: drag horizontally or use arrow keys while focused. Select SAMPLE and LOAD audio (up to ten seconds) for the selected voice. START/END, PITCH and REV edit playback without modifying the imported file. TRIM crops the selected region in memory. Keep START below END. CLOSED/OPEN audition the two hi-hat articulations; subsequent hats choke the preceding hat.
+Voice LEVEL, TUNE, DECAY, TONE control DSP. Knobs are accessible range inputs: drag up/down or left/right, use the mouse wheel, or use arrow keys while focused. Select SAMPLE and LOAD audio (up to ten seconds) for the selected voice. START/END, PITCH and REV edit playback without modifying the imported file. TRIM crops the selected region in memory. Keep START below END. CLOSED/OPEN audition the two hi-hat articulations; subsequent hats choke the preceding hat.
 
 ## Architecture
 
@@ -57,3 +57,5 @@ These are stylistic approximations mapped to DS-9's nine tracks, not circuit mod
 Kit changes keep steps, lengths, slots, tempo, swing, levels, mute/solo states and imported sample buffers. They switch all voices to ANALOG and reset Tune/Decay/Tone to neutral. Select SAMPLE again to use a retained imported sound. Kit choice and edits are currently not saved in pattern JSON; reload restores DS-9 ORIGINAL. Run `node tests/kits.mjs` against Vite for 36-voice offline rendering, articulation, parameter and kit-switch checks.
 
 The synthesized cymbals now use a softer, longer noise wash across all kits. See [cymbal sound revision](docs/CYMBAL-UPDATE.md) for decay ranges and comparison tests. Other drums and imported samples retain their existing sound paths.
+
+Knobs use relative mouse, pen or finger dragging without jumping on touch. Up/right increases and down/left decreases; Shift slows mouse adjustment. Pointer capture keeps dragging active beyond the control. Touch sensitivity uses screen pixels, independent of canvas scaling. A temporary percentage readout appears during adjustment. Run `node tests/knobs.mjs` against Vite to validate actual touch events and the existing input methods.
