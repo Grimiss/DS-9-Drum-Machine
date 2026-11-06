@@ -21,7 +21,7 @@ Click Play to unlock browser audio and start the demo in A. Click a voice name t
 
 A–D retain separate step patterns and MIDI clips. Existing COPY/PASTE/CLEAR operate on step patterns; MIDI editing has its own undo/redo and delete controls. RESET ALL clears all step patterns and MIDI clips. SAVE/LOAD now exports/imports complete version-2 sessions, including embedded audio. Legacy version-1 pattern files still load. Reloading otherwise restores the demo, so save before closing.
 
-Voice LEVEL, TUNE, DECAY, TONE control DSP. Knobs are accessible range inputs: drag horizontally or use arrow keys while focused. Select SAMPLE and LOAD audio (up to ten seconds) for the selected voice. START/END, PITCH and REV edit playback without modifying the imported file. TRIM crops the selected region in memory. Keep START below END. CLOSED/OPEN audition the two hi-hat articulations; subsequent hats choke the preceding hat.
+Voice LEVEL, TUNE, DECAY, TONE control DSP. Knobs are accessible range inputs: drag up/down or left/right, use the mouse wheel, or use arrow keys while focused. Select SAMPLE and LOAD audio (up to ten seconds) for the selected voice. START/END, PITCH and REV edit playback without modifying the imported file. TRIM crops the selected region in memory. Keep START below END. CLOSED/OPEN audition the two hi-hat articulations; subsequent hats choke the preceding hat.
 
 ## Architecture
 
@@ -76,3 +76,5 @@ Save sessions with the existing SAVE button. They include A–D steps/lengths/cl
 Run `node tests/scheduler.mjs` and `node tests/midi.mjs` against the development server for timing, recording, editor and full-session regression tests. See [the implementation review](docs/MIDI-IMPLEMENTATION.md) and [editor screenshot](docs/MIDI-editor-screenshot.png).
 
 The synthesized cymbals now use a softer, longer noise wash across all kits. See [cymbal sound revision](docs/CYMBAL-UPDATE.md) for decay ranges and comparison tests. Other drums and imported samples retain their existing sound paths.
+
+Knobs use relative mouse, pen or finger dragging without jumping on touch. Up/right increases and down/left decreases; Shift slows mouse adjustment. Pointer capture keeps dragging active beyond the control. Touch sensitivity uses screen pixels, independent of canvas scaling. A temporary percentage readout appears during adjustment. Run `node tests/knobs.mjs` against Vite to validate actual touch events and the existing input methods.

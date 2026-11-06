@@ -718,3 +718,9 @@ header i{margin-top:0;font-size:24px}
 html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{position:fixed;inset:0;display:block;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 #app{position:fixed;overflow:hidden}
+/* Direct finger/mouse control of the existing rotary hardware. */
+.knob-wrap{touch-action:none;user-select:none;-webkit-user-select:none;cursor:ns-resize}
+.knob-wrap input{pointer-events:none;touch-action:none}
+.knob-wrap:focus-within .knob{outline:2px solid #e9d9b4;outline-offset:3px}
+.swing .knob-wrap::before{content:'';position:absolute;inset:-16px -3px;touch-action:none}
+.knob-wrap.adjusting::after{content:attr(data-value);position:absolute;top:100%;left:50%;transform:translateX(-50%);z-index:8;background:#11170e;color:#ffe3a0;border:1px solid #baaa7c;border-radius:4px;padding:3px 6px;font:bold 12px Arial,sans-serif;pointer-events:none;white-space:nowrap}
