@@ -1,3 +1,4 @@
+import { mountHardwareViewport } from "./viewport";
 import { kits, type KitId } from "./kits";
 import "./style.css";
 import { names, voices, demo, emptyPattern, clone } from "./state";
@@ -376,14 +377,6 @@ click("load", () => ($("pattern-file") as HTMLInputElement).click());
     $("notice").textContent = "INVALID PATTERN FILE";
   }
 };
-function resize() {
-  const scale = Math.min(innerWidth / 1754, innerHeight / 886);
-  root.style.width = `${1754 * scale}px`;
-  root.style.height = `${886 * scale}px`;
-  document.querySelector<HTMLElement>(".machine")!.style.transform =
-    `scale(${scale})`;
-}
-addEventListener("resize", resize);
 render();
 controls();
-resize();
+mountHardwareViewport(root);
