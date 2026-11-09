@@ -1,13 +1,43 @@
 import { synthesizeCymbal } from "./cymbal";
 import { kits, type KitId } from "./kits";
 import { synthesizeKit } from "./synthesis";
-import type { Voice } from "./state";
+import { isAudible, type Voice } from "./state";
 export class Engine {
   kit: KitId = "classic";
   context?: AudioContext;
   master?: DynamicsCompressorNode;
   hat?: GainNode;
   active = new Set<GainNode>();
+  private trackLevels = Array(9).fill(0.7) as number[];
+  private trackAudible = Array(9).fill(true) as boolean[];
+  private trackBuses: GainNode[] = [];
+  setTrackLevel(index: number, level: number) {
+    if (!Number.isFinite(level)) return;
+    level = Math.max(0, Math.min(1, level));
+    if (level === this.trackLevels[index]) return;
+    this.trackLevels[index] = level;
+    this.updateBus(index);
+  }
+  setAudibility(muted: boolean[], solo: boolean[]) {
+    for (let i = 0; i < 9; i++) {
+      const audible = isAudible(i, muted, solo);
+      if (audible !== this.trackAudible[i]) {
+        this.trackAudible[i] = audible;
+        this.updateBus(i);
+      }
+    }
+  }
+  private updateBus(index: number) {
+    const bus = this.trackBuses[index],
+      c = this.context;
+    if (!bus || !c) return;
+    bus.gain.cancelScheduledValues(c.currentTime);
+    bus.gain.setTargetAtTime(
+      this.trackAudible[index] ? this.trackLevels[index] : 0,
+      c.currentTime,
+      0.006,
+    );
+  }
   silence() {
     const t = this.context?.currentTime ?? 0;
     for (const g of this.active) {
@@ -26,6 +56,16 @@ export class Engine {
       gain.gain.value = 0.45;
       this.master.connect(gain).connect(this.context.destination);
     }
+    if (!this.trackBuses.length)
+      this.trackBuses = Array.from({ length: 9 }, (_, i) => {
+        const bus = this.context!.createGain();
+        bus.gain.setValueAtTime(
+          this.trackAudible[i] ? this.trackLevels[i] : 0,
+          this.context!.currentTime,
+        );
+        bus.connect(this.master!);
+        return bus;
+      });
     await this.context.resume();
   }
   trigger(
@@ -37,18 +77,39 @@ export class Engine {
     output: AudioNode = this.master!,
   ) {
     if (v.level <= 0) return;
-    const recipe=this.kit === "classic" ? undefined : kits[this.kit];
+    // Normalize the per-hit level into the live channel bus. Offline renders keep
+    // the original direct path; event velocity remains relative to the track level.
+    if (
+      context === this.context &&
+      output === this.master &&
+      this.trackBuses[i]
+    ) {
+      v = {
+        ...v,
+        level: Math.min(1, v.level / Math.max(0.000001, this.trackLevels[i])),
+      };
+      output = this.trackBuses[i];
+    }
+    const recipe = this.kit === "classic" ? undefined : kits[this.kit];
     const c = context,
       g = c.createGain(),
       dur =
-        (i===8 && v.mode==='sample' ? .65 : recipe && v.mode === "analog"
-          ? (i === 5 && state === 2 ? recipe.openHat : recipe.durations[i])
-          : (i === 5 ? (state === 2 ? .45 : .065) : [.4,.17,.16,.3,.22,.1,.13,.08,2.8][i])) *
+        (i === 8 && v.mode === "sample"
+          ? 0.65
+          : recipe && v.mode === "analog"
+            ? i === 5 && state === 2
+              ? recipe.openHat
+              : recipe.durations[i]
+            : i === 5
+              ? state === 2
+                ? 0.45
+                : 0.065
+              : [0.4, 0.17, 0.16, 0.3, 0.22, 0.1, 0.13, 0.08, 2.8][i]) *
         (0.3 + v.decay * 2),
       pitch = 2 ** ((v.tune - 0.5) * 2);
     g.gain.setValueAtTime(Math.max(0.001, v.level * 0.18), time);
-    if(i===8 && v.mode==='analog')g.gain.setValueAtTime(0,time+dur);
-    else g.gain.exponentialRampToValueAtTime(0.0001,time+dur);
+    if (i === 8 && v.mode === "analog") g.gain.setValueAtTime(0, time + dur);
+    else g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
     g.connect(output);
     if (context === this.context) {
       this.active.add(g);
@@ -84,8 +145,14 @@ export class Engine {
       s.start(time, start, end - start);
       return;
     }
-    if(i===8 && !recipe){synthesizeCymbal(c,g,time,dur,v);return;}
-    if(recipe){synthesizeKit(c,g,i,time,dur,v,recipe);return;}
+    if (i === 8 && !recipe) {
+      synthesizeCymbal(c, g, time, dur, v);
+      return;
+    }
+    if (recipe) {
+      synthesizeKit(c, g, i, time, dur, v, recipe);
+      return;
+    }
     const tone = c.createBiquadFilter();
     tone.type =
       i === 0 || i === 3 || i === 4 || i === 7 ? "lowpass" : "highpass";

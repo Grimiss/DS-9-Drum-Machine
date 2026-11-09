@@ -98,14 +98,16 @@ for (const id of ["sr88", "808", "909", "kr55"]) {
   await page.locator("#stop").click();
 }
 await page.locator("#kit").selectOption("classic");
+await page.locator('[data-sample="5"]').click();
 await page.locator("#sample").click();
+await page.locator("#sample-close").click();
 await page.locator("#kit").selectOption("sr88");
 assert.ok(
   (await page.locator("#analog").getAttribute("class")).includes("amber"),
 );
-await page.locator("#voice-knobs input").first().fill("0.4");
+await page.locator("#track-knobs-5 input").first().fill("0.4");
 assert.equal(
-  Number(await page.locator("#voice-knobs input").first().inputValue()),
+  Number(await page.locator("#track-knobs-5 input").first().inputValue()),
   0.4,
 );
 await page.reload();
