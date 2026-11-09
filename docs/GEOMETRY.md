@@ -1,5 +1,7 @@
 # Approved reference geometry
 
+Historical reference layout. The user-requested per-track-control revision expands the sequencer panel to x=29, width=1678 within the same 1754 × 886 chassis; sample editing now opens in a modal. See [TRACK-CONTROLS.md](TRACK-CONTROLS.md).
+
 Native canvas: **1754 × 886** (1.980:1). All coordinates are approximate pixels from the upper left. The interface scales uniformly as one canvas; no panel reflow.
 
 | Section | x | y | width | height |

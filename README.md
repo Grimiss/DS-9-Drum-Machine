@@ -17,11 +17,11 @@ For browser integration tests, start Vite on port 5173, install Chromium, and ru
 
 ## Playing
 
-Click Play to unlock browser audio and start the demo in A. Click a voice name to select and audition it. Steps toggle off/on; hats cycle off/closed/open. M and S buttons precede the lane names. M lights red when muted; S lights green when soloed. Multiple solos form a group; mute takes priority. SET LENGTH enables choosing a lane's final step. Length displays also increment on click and decrement on right click. Each lane wraps independently. Pause preserves the next position; Stop returns the clock to zero and silences scheduled voices.
+Click Play to unlock browser audio and start the demo in A. Click a voice name to select and audition it. Each lane has its own Level, Tune, Decay and Tone knobs after the sixteen-step grid. Steps toggle off/on; hats cycle off/closed/open. M and S buttons precede the lane names. M lights red when muted; S lights green when soloed. Multiple solos form a group; mute takes priority. SET LENGTH enables choosing a lane's final step. Length displays also increment on click and decrement on right click. Each lane wraps independently. Pause preserves the next position; Stop returns the clock to zero and silences scheduled voices.
 
-A–D retain separate steps and lengths in memory. COPY/PASTE copies a pattern; CLEAR clears the current slot; RESET ALL clears all four. SAVE/LOAD exports/imports the four patterns as JSON. Reloading the page restores the demo, so save work before closing.
+A–D retain separate steps and lengths in memory. COPY/PASTE copies a pattern; CLEAR clears the current slot; RESET ALL clears all four. SAVE/LOAD exports/imports the four patterns and Song arrangement as JSON. Older pattern-only files remain supported. Reloading the page restores the demo, so save work before closing.
 
-Voice LEVEL, TUNE, DECAY, TONE control DSP. Knobs are accessible range inputs: drag up/down or left/right, use the mouse wheel, or use arrow keys while focused. Select SAMPLE and LOAD audio (up to ten seconds) for the selected voice. START/END, PITCH and REV edit playback without modifying the imported file. TRIM crops the selected region in memory. Keep START below END. CLOSED/OPEN audition the two hi-hat articulations; subsequent hats choke the preceding hat.
+Voice LEVEL, TUNE, DECAY, TONE control DSP. Knobs are accessible range inputs: drag up/down or left/right, use the mouse wheel, or use arrow keys while focused. Click the lane’s SAMPLE button to open its file-loading/editing dialog, then LOAD audio (up to ten seconds). PREVIEW auditions that instrument. No microphone recording is enabled. START/END, PITCH and REV edit playback without modifying the imported file. TRIM crops the selected region in memory. Keep START below END. CLOSED/OPEN audition the two hi-hat articulations; subsequent hats choke the preceding hat.
 
 ## Architecture
 
@@ -59,3 +59,13 @@ Kit changes keep steps, lengths, slots, tempo, swing, levels, mute/solo states a
 The synthesized cymbals now use a softer, longer noise wash across all kits. See [cymbal sound revision](docs/CYMBAL-UPDATE.md) for decay ranges and comparison tests. Other drums and imported samples retain their existing sound paths.
 
 Knobs use relative mouse, pen or finger dragging without jumping on touch. Up/right increases and down/left decreases; Shift slows mouse adjustment. Pointer capture keeps dragging active beyond the control. Touch sensitivity uses screen pixels, independent of canvas scaling. A temporary percentage readout appears during adjustment. Run `node tests/knobs.mjs` against Vite to validate actual touch events and the existing input methods.
+
+## Track controls and fills
+
+Each instrument has four live knobs after its step grid and its own Sample editor button. MIXER opens larger channel strips with level faders and the same sound controls, M/S and Sample access. Levels and mute/solo also affect already-ringing sounds. The full-width hardware grid preserves all sixteen steps and independent lane lengths. Sample windows retain each track’s own buffer/edit settings; they do not copy settings between instruments.
+
+**FILL:** tap for a one-bar fill on an available bar boundary; hold for a temporary fill, then release to return. Fills honor mute/solo and do not rewrite stored patterns. Pause/Stop cancels the fill. See [track controls and fill notes](docs/TRACK-CONTROLS.md) for operation, persistence scope and tests.
+
+## Song mode
+
+Open SONG, select SONG playback, and build an ordered list of A–D patterns with a bar count for each row. LOOP SONG repeats the arrangement; otherwise playback ends after the last row and lets drum tails decay. PATTERN mode keeps the familiar selected-pattern loop. Lane lengths remain independent, continuing their phase across song rows and loops. Pause/Play resumes; Stop rewinds. Stop or pause before editing; arrangement edits rewind. SAVE includes the arrangement alongside A–D patterns. These files do not yet include live mixer settings, factory kit choice or imported sample assets.
